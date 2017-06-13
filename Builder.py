@@ -25,14 +25,14 @@ class Builder:
 
 
     def proccessData(self,path,bin):
-        data = pd.read_csv(path);
+        data = pd.read_csv(path)
         for att in self.attributes :
             if(self.attributes[att] == "NUMERIC"):
                 #firs fill miss data with avarage value (use fillna and mean)
                 data[att] = data.groupby("class").transform(lambda x: x.fillna(x.mean()))
                 #now Discretization
-                labels = range(bin+1)
-                data[att] = pd.cut(data[att], bins=bin, labels=labels, include_lowest=True)
+                # labels = range(bin+1)
+                data[att] = pd.cut(data[att], bins=bin, labels=False)
             if(att == "class") :
                  #use array and not string
                 clasiffication = self.attributes[att][1:-1]

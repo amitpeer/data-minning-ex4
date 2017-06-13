@@ -28,20 +28,24 @@ class MainWindow(Frame):
 
     def browse(self):
         print("browse")
-
         Tk().withdraw()
         self.filename = tkFileDialog.askdirectory()
-
         self.entry_dirPath.insert(0, self.filename)
 
     def build(self):
         print("build")
+        path = self.entry_dirPath.get()
+        bins = int(self.entry_bins.get())
         builder = Builder()
-        Builder.build(builder, self.entry_dirPath.get(), self.entry_bins.get())
+        Builder.build(builder, path, bins)
 
 
     def classify(self):
         print("classify")
+
+    def checkInput(self, path, bins):
+        print("checkInput")
+
 
 
 root = Tk()
