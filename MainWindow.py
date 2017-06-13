@@ -37,7 +37,7 @@ class MainWindow(Frame):
     def build(self):
         print("build")
         builder = Builder()
-        Builder.build(builder, self.entry_dirPath.get() + "\\Structure.txt", self.entry_bins.get())
+        Builder.build(builder, self.entry_dirPath.get(), self.entry_bins.get())
 
     def classify(self):
         print("classify")

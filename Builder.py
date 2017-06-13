@@ -8,7 +8,7 @@ class Builder:
         self.attributes = {}
 
     def build(self, path, bin):
-        self.readStructure(path)
+        self.readStructure(path + "\\Structure.txt")
 
     def readStructure(self, path):
         print("Builder.readStructure")
