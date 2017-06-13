@@ -8,8 +8,8 @@ class Builder:
         self.attributes = {}
 
     def build(self, path, bin):
-        self.readStructure(path + "\\Structure.txt")
-        self.proccessData(path + "\\train.cvs",bin)
+        self.readStructure(path + "/Structure.txt")
+        self.proccessData(path + "/train.csv",bin)
 
 
 
@@ -43,7 +43,7 @@ class Builder:
                 attribute = self.attributes[att][1:-1]
                 attribute = attribute.split(',')
                 self.attributes[att] = attribute
-                data[att].fillna(data[att].mode[0], inplace=True)
+                data[att].fillna(data[att].mode()[0], inplace=True)
         print(data)
 
 
