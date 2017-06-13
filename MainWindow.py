@@ -39,6 +39,7 @@ class MainWindow(Frame):
         builder = Builder()
         Builder.build(builder, self.entry_dirPath.get(), self.entry_bins.get())
 
+
     def classify(self):
         print("classify")
 
