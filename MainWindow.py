@@ -35,7 +35,7 @@ class MainWindow(Frame):
     def build(self):
         print("build")
         path = self.entry_dirPath.get()
-        bins = int(self.entry_bins.get())
+        bins = int(float(self.entry_bins.get()))
         builder = Builder()
         Builder.build(builder, path, bins)
 
