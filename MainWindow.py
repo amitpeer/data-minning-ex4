@@ -1,5 +1,6 @@
 import tkFileDialog
 from Tkinter import *
+from Builder import Builder
 
 
 class MainWindow(Frame):
@@ -10,12 +11,12 @@ class MainWindow(Frame):
         button_classify = Button(self, text="Classify", command=self.classify)
         button_browse = Button(self, text="browse", command=self.browse)
         self.entry_dirPath = Entry(self)
-        self.entry_discBins = Entry(self)
+        self.entry_bins = Entry(self)
 
         label_dirPath.grid(row=0, columnspan=2, pady=25)
         label_discBins.grid(row=1, column=1, pady=25)
         self.entry_dirPath.grid(row=0, column=2, )
-        self.entry_discBins.grid(row=1, column=2)
+        self.entry_bins.grid(row=1, column=2)
         button_browse.grid(row=0, column=3)
         button_build.grid(row=3, column=1, sticky=E, pady=15)
         button_classify.grid(row=3, column=2, sticky=E, pady=15)
@@ -35,6 +36,8 @@ class MainWindow(Frame):
 
     def build(self):
         print("build")
+        builder = Builder()
+        Builder.build(builder, self.entry_dirPath.get(), self.entry_bins.get())
 
     def classify(self):
         print("classify")
