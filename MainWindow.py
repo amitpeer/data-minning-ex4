@@ -1,4 +1,5 @@
 import tkFileDialog
+import tkMessageBox
 from Tkinter import *
 from Builder import Builder
 
@@ -23,6 +24,7 @@ class MainWindow(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
+        self.builder = None
         self.pack()
         self.createWidgets()
 
@@ -35,13 +37,18 @@ class MainWindow(Frame):
     def build(self):
         print("build")
         path = self.entry_dirPath.get()
-        bins = int(float(self.entry_bins.get()))
-        builder = Builder()
-        Builder.build(builder, path, bins)
-
+        bin = int(float(self.entry_bins.get()))
+        self.builder = Builder(path, bin)
+        # try:
+        Builder.build(self.builder)
+        tkMessageBox.showinfo("Done", "Building classifier using train-set is done!")
+        # except:
+        #     tkMessageBox.showinfo("Failed", "Something went wrong, please try again")
 
     def classify(self):
         print("classify")
+        Builder.readTestSet(self.builder)
+
 
     def checkInput(self, path, bins):
         print("checkInput")

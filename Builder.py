@@ -4,36 +4,30 @@ import re
 
 
 class Builder:
-    def __init__(self):
+    def __init__(self, path, bins):
         print("Builder ctr")
         self.attributes = {}
+        self.path = path
+        self.bins = bins
+        self.trainingSet = None
+        self.testSet = None
 
-    def build(self, path, bin):
-        self.readStructure(path + "/Structure.txt")
+    def build(self):
+        self.readStructure()
         self.arrangeAttributes()
-        self.traningSet = self.proccessData(path + "/train.csv", bin)
+        self.trainingSet = self.proccessData(self.path + "/train.csv")
 
-    def readStructure(self, path):
+    def readTestSet(self):
+        print("readTestSet")
+        self.testSet = self.proccessData(self.path + "/test.csv")
+
+    def readStructure(self):
         print("Builder.readStructure")
-        file = open(path, 'r')
+        path = self.path + "/Structure.txt"
         with open(path, 'r') as structure:
             for line in structure:
                 lineSplitBySpaces = line.split()
                 self.attributes[lineSplitBySpaces[1]] = lineSplitBySpaces[2]
-
-    def discretization(self, col, bins):
-        minval = col.min()
-        maxval = col.max()
-        interval = (maxval-minval)/bins
-        break_points = [minval]     #list
-        for i in range(0,bins):
-            break_points.insert(minval+interval)   #insert interval to list
-            minval = minval+interval
-
-        break_points.insert(maxval)
-        labels = range(len(break_points)-1)      #the labels of the bins
-        colbins = pd.cut(col, bins=break_points, labels=labels, include_lowest=True)
-        return colbins
 
     # arrange attributes dictionary so all the attributes values would be in array
     def arrangeAttributes(self):
@@ -47,20 +41,21 @@ class Builder:
             print(key, value)
 
     # fill missing values + discrimination
-    def proccessData(self, path, bin):
+    def proccessData(self, path):
         print("proccessData")
         data = pd.read_csv(path)
         for att in data:
             if (self.attributes[att] == "NUMERIC"):
+
                 # fill miss data with avarage value (use fillna and mean)
-                data[att] = data.groupby("class").transform(lambda x: x.fillna(x.mean()))
+                data[att] = data.groupby("class").transform(lambda x: x.fillna(x.mean()))[att]
 
                 # Discretization
-                #data[att] = discretization(data[att], bin)
-                data[att] = pd.cut(data[att], bins=bin, labels=False)
+                data[att] = self.discretization(data[att])
+                # data[att] = pd.cut(data[att], bins=self.bins, labels=False)
 
-                # change "numeric" to the values after Discertization
-                self.attributes[att] = range(0, bin)
+                # change "numeric" to the values after discrimination
+                self.attributes[att] = range(0, self.bins)
 
             elif (att != "class"):
                 # categorical issue
@@ -70,5 +65,18 @@ class Builder:
             print(data[var])
         return data
 
+    def discretization(self, col):
+        minval = col.min()
+        maxval = col.max()
+        weight = (maxval - minval) / self.bins
+        break_points = [minval]  # initialize  list
+        for i in range(0, self.bins):
+            # insert interval to list
+            break_points.insert(len(break_points), minval + (i+1) * weight + 1)
+            # minval = minval + interval
 
+        # break_points.insert(len(break_points), maxval)
+        labels = range(len(break_points) - 1)  # the labels of the bins
+        colbins = pd.cut(col, bins=break_points, labels=labels, include_lowest=True)
 
+        return colbins
