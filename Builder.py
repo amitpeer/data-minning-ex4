@@ -25,13 +25,13 @@ class Builder:
         minval = col.min()
         maxval = col.max()
         interval = (maxval-minval)/bins
-        break_points = [minval]
+        break_points = [minval]     #list
         for i in range(0,bins):
-            break_points.insert(minval+interval)
+            break_points.insert(minval+interval)   #insert interval to list
             minval = minval+interval
 
         break_points.insert(maxval)
-        labels = range(len(break_points)-1)
+        labels = range(len(break_points)-1)      #the labels of the bins
         colbins = pd.cut(col, bins=break_points, labels=labels, include_lowest=True)
         return colbins
 
