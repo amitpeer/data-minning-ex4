@@ -51,11 +51,11 @@ class Builder:
                 data[att] = data.groupby("class").transform(lambda x: x.fillna(x.mean()))[att]
 
                 # Discretization
-                data[att] = self.discretization(data[att])
-                # data[att] = pd.cut(data[att], bins=self.bins, labels=False)
+                # data[att] = self.discretization(data[att])
+                data[att] = pd.cut(data[att], bins=self.bins, labels=False)
 
                 # change "numeric" to the values after discrimination
-                self.attributes[att] = range(0, self.bins)
+                # self.attributes[att] = range(0, self.bins)
 
             elif (att != "class"):
                 # categorical issue
@@ -73,10 +73,8 @@ class Builder:
         for i in range(0, self.bins):
             # insert interval to list
             break_points.insert(len(break_points), minval + (i+1) * weight + 1)
-            # minval = minval + interval
 
-        # break_points.insert(len(break_points), maxval)
-        labels = range(len(break_points) - 1)  # the labels of the bins
+        labels = range(len(break_points) - 1)
         colbins = pd.cut(col, bins=break_points, labels=labels, include_lowest=True)
 
         return colbins

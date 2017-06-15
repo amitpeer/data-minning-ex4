@@ -1,7 +1,9 @@
 import tkFileDialog
 import tkMessageBox
 from Tkinter import *
+
 from Builder import Builder
+from Classifier import Classifier
 
 
 class MainWindow(Frame):
@@ -25,6 +27,7 @@ class MainWindow(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.builder = None
+        self.classifier = None
         self.pack()
         self.createWidgets()
 
@@ -48,15 +51,14 @@ class MainWindow(Frame):
     def classify(self):
         print("classify")
         Builder.readTestSet(self.builder)
-
+        self.classifier = Classifier(self.builder)
+        Classifier.calssify(self.classifier)
 
     def checkInput(self, path, bins):
         print("checkInput")
-
 
 
 root = Tk()
 root.geometry("350x200")
 app = MainWindow(master=root)
 app.mainloop()
-
