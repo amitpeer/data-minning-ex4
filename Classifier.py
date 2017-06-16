@@ -45,3 +45,37 @@ class Classifier:
 
     def mEstimate(self, att, value):
         print("mEstimate")
+        propsArr = []
+        classes = len(self.numberOfDifferentClassses)
+        allAttval = self.trainingSet.groupby([att])[att].agg('count')  #needed to calc p
+        m = 2.0
+        p = 1.0/len(allAttval)
+
+        for i in range(classes) :
+            n = self.numberOfDifferentClassses[i]
+            #get the count based on both - att ans "class" (nc)
+            nc = self.trainingSet[(self.trainingSet[att] == 0)
+                                  & (self.trainingSet['class'] == self.numberOfDifferentClassses.keys()[i])][att].count()
+            propOfAttAndClass = (nc + m*p)/(n + m)
+            propsArr.insert(len(propsArr), propOfAttAndClass)
+
+        return propsArr
+
+    def accuracy(self):
+        with open(self.builder.path+"\\output.txt", 'r') as f:
+            testOutput = f.readlines()
+            matchLines = 0.0
+            totlLines = 0.0
+            for i in range(len(testOutput)):
+                totlLines = totlLines + 1
+                if(self.testSet['class'].iloc[i] == testOutput[i].split()[1]):
+                    matchLines = matchLines+1.0
+            accuracy = matchLines/totlLines
+            print ("Accuracy is: "+accuracy)
+
+
+
+
+
+
+
