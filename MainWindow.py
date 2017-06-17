@@ -44,7 +44,7 @@ class MainWindow(Frame):
         self.builder = Builder(path, bin)
         # try:
         Builder.build(self.builder)
-        tkMessageBox.showinfo("Done", "Building classifier using train-set is done!")
+        tkMessageBox.showinfo("Building Done", "Building classifier using train-set is done!")
         # except:
         #     tkMessageBox.showinfo("Failed", "Something went wrong, please try again")
 
@@ -53,6 +53,7 @@ class MainWindow(Frame):
         Builder.readTestSet(self.builder)
         self.classifier = Classifier(self.builder)
         Classifier.calssify(self.classifier)
+        tkMessageBox.showinfo("Classifying Done", "Finished classifying the test set.")
 
     def checkInput(self, path, bins):
         print("checkInput")

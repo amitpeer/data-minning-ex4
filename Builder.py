@@ -59,7 +59,13 @@ class Builder:
 
             elif (att != "class"):
                 # categorical issue
-                data[att].fillna(data[att].mode()[0], inplace=True)
+                fillEmptyWith = None
+                if len(data[att].mode()) == 0:
+                    # Case there is equal number of different values
+                    fillEmptyWith = self.attributes[att][0]
+                else :
+                    fillEmptyWith = data[att].mode()[0]
+                data[att].fillna(fillEmptyWith, inplace=True)
 
         for var in data:
             print(data[var])
@@ -72,9 +78,25 @@ class Builder:
         break_points = [minval]  # initialize  list
         for i in range(0, self.bins):
             # insert interval to list
-            break_points.insert(len(break_points), minval + (i+1) * weight + 1)
+            break_points.insert(len(break_points), minval + (i+1) * weight)
 
         labels = range(len(break_points) - 1)
         colbins = pd.cut(col, bins=break_points, labels=labels, include_lowest=True)
 
         return colbins
+
+    def discretization2(self, df):
+        for column in df.columns:
+            if self.attributes[column] == "NUMERIC":
+                minval = df[column].min()
+                maxval = df[column].max()
+                weight = float(maxval - minval) / float(self.bins)
+                cutpoints = []
+                labels = []
+                cutpoints.append(float("-inf"))
+                for i in range(self.bins):
+                    cutpoints.append(minval + i * weight)
+                cutpoints.append(float("inf"))
+                for j in range(self.bins + 1):
+                    labels.append(j + 1)
+                df[column] = pd.cut(df[column], bins=cutpoints, labels=labels, include_lowest=True)
