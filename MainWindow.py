@@ -1,5 +1,7 @@
 import tkFileDialog
 import tkMessageBox
+import os.path
+import math
 from Tkinter import *
 
 from Builder import Builder
@@ -26,6 +28,7 @@ class MainWindow(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
+        self.bins = None
         self.builder = None
         self.classifier = None
         self.pack()
@@ -33,6 +36,7 @@ class MainWindow(Frame):
 
     def browse(self):
         print("browse")
+        self.entry_dirPath.delete(0, 'end')
         Tk().withdraw()
         self.filename = tkFileDialog.askdirectory()
         self.entry_dirPath.insert(0, self.filename)
@@ -40,23 +44,52 @@ class MainWindow(Frame):
     def build(self):
         print("build")
         path = self.entry_dirPath.get()
-        bin = int(float(self.entry_bins.get()))
-        self.builder = Builder(path, bin)
-        # try:
-        Builder.build(self.builder)
-        tkMessageBox.showinfo("Building Done", "Building classifier using train-set is done!")
-        # except:
-        #     tkMessageBox.showinfo("Failed", "Something went wrong, please try again")
+        if self.checkInput(path):
+            self.builder = Builder(path, self.bins)
+            try:
+                Builder.build(self.builder)
+                tkMessageBox.showinfo("Building Done", "Building classifier using train-set is done!")
+            except:
+                tkMessageBox.showinfo("Failed", "Something went wrong, please try again")
 
     def classify(self):
         print("classify")
         Builder.readTestSet(self.builder)
         self.classifier = Classifier(self.builder)
-        Classifier.calssify(self.classifier)
+        Classifier.classify(self.classifier)
         tkMessageBox.showinfo("Classifying Done", "Finished classifying the test set.")
 
-    def checkInput(self, path, bins):
+    def checkInput(self, path):
         print("checkInput")
+        # check bins
+        try:
+            int(self.entry_bins.get())
+        except ValueError:
+            tkMessageBox.showinfo(title="error", message="Bins must be a number")
+            return False
+
+        self.bins = int(float(self.entry_bins.get()))
+        if self.bins < 1:
+            tkMessageBox.showinfo("Error", "Bad number of bins")
+            return False
+
+        # check path
+        if not os.path.exists(path):
+            tkMessageBox.showinfo("Error", "Path does not exist")
+            return False
+
+        # check all needed files exist in path
+        pathToFiles = [path + "\\Structure.txt", path + "\\train.csv", path + "\\test.csv"]
+        for pathToFile in pathToFiles:
+            if os.path.exists(pathToFile) == False or (os.path.getsize(pathToFile) > 0) == False:
+                tkMessageBox.showinfo(title="error", message="One or more of the needed files does not exist in the given path")
+                return False
+            if os.stat(pathToFile).st_size == 0:
+                tkMessageBox.showinfo(title="error", message="One or more of the needed files are empty")
+                return False
+
+        return True
+
 
 
 root = Tk()
