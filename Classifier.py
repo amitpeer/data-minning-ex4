@@ -1,6 +1,3 @@
-import pandas as pd
-
-
 class Classifier:
     def __init__(self, builder):
         print("Classifier ctr")
@@ -40,7 +37,6 @@ class Classifier:
 
         for rowNumber in range(len(self.testSet["class"])):
             allProbsArray = []
-            print(rowNumber)
             for att in self.testSet:
                 if att != 'class':
                     value = self.testSet[att][rowNumber]
@@ -70,7 +66,7 @@ class Classifier:
                 output.write(str(rowNumber) + " " + classification + "\n")
 
         print("Finished classifying all rows")
-        self.accuracy()
+        # self.accuracy()
 
     def accuracy(self):
         with open(self.builder.path + "\\output.txt", 'r') as f:
