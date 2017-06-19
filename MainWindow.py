@@ -48,7 +48,10 @@ class MainWindow(Frame):
             self.builder = Builder(path, self.bins)
             try:
                 Builder.build(self.builder)
-                tkMessageBox.showinfo("Building Done", "Building classifier using train-set is done!")
+                if self.builder.trainingSet is None:
+                    tkMessageBox.showinfo("Bad input", "Bins isn't valid, Please try to another value of bins")
+                else:
+                    tkMessageBox.showinfo("Building Done", "Building classifier using train-set is done!")
             except:
                 tkMessageBox.showinfo("Failed", "Something went wrong, please try again")
 
