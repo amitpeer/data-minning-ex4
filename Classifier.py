@@ -66,7 +66,7 @@ class Classifier:
                 output.write(str(rowNumber) + " " + classification + "\n")
 
         print("Finished classifying all rows")
-        # self.accuracy()
+        self.accuracy()
 
     def accuracy(self):
         with open(self.builder.path + "\\output.txt", 'r') as f:

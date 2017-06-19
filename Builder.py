@@ -12,11 +12,14 @@ class Builder:
     def build(self):
         self.readStructure()
         self.arrangeAttributes()
-        self.trainingSet = self.proccessData(self.path + "/train.csv")
+        self.trainingSet = self.proccessData(self.path + "/train.csv", True)
+
+    def isBinValid(self):
+        return self.trainingSet
 
     def readTestSet(self):
         print("readTestSet")
-        self.testSet = self.proccessData(self.path + "/test.csv")
+        self.testSet = self.proccessData(self.path + "/test.csv", False)
 
     def readStructure(self):
         print("Builder.readStructure")
@@ -35,12 +38,27 @@ class Builder:
                 attribute = attribute.split(',')
                 self.attributes[att] = attribute
 
+    def isValidBin(self,myData) :
+        minBin = 1
+        distanceValue = 1
+        for att in self.attributes :
+            if self.attributes[att] == "NUMERIC":
+                distanceValue = myData[att].max() - myData[att].min()
+                if distanceValue>minBin :
+                    minBin=distanceValue
+        return distanceValue > self.bins
+
     # fill missing values + discrimination
-    def proccessData(self, path):
+    def proccessData(self, path, isTrainSet):
         print("proccessData")
         data = pd.read_csv(path)
+
         for att in data:
             if (self.attributes[att] == "NUMERIC"):
+
+                #check Bins on trainning set
+                if self.bins > data[att].max() - data[att].min() and isTrainSet:
+                    return None
 
                 # fill miss data with avarage value (use fillna and mean)
                 data[att] = data.groupby("class").transform(lambda x: x.fillna(x.mean()))[att]

@@ -55,6 +55,7 @@ class MainWindow(Frame):
             except:
                 tkMessageBox.showinfo("Failed", "Something went wrong, please try again")
 
+
     def classify(self):
         print("classify")
         Builder.readTestSet(self.builder)
